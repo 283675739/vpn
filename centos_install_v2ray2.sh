@@ -127,7 +127,8 @@ getData() {
         CERT_FILE="/etc/v2ray/${DOMAIN}.pem"
         KEY_FILE="/etc/v2ray/${DOMAIN}.key"
     else
-        resolve=`curl -sL https://hijk.art/hostip.php?d=${DOMAIN}`
+        #resolve=`curl -sL https://hijk.art/hostip.php?d=${DOMAIN}`
+        resolve=`$(ping -c 2 ${DOMAIN} | head -2 | tail -1 | awk '{print $5}' | sed 's/[(:)]//g')`
         res=`echo -n ${resolve} | grep ${IP}`
         if [[ -z "${res}" ]]; then
             colorEcho ${BLUE}  "${DOMAIN} 解析结果：${resolve}"
@@ -187,7 +188,8 @@ getData() {
                 index=`shuf -i0-${len} -n1`
                 PROXY_URL=${SITES[$index]}
                 host=`echo ${PROXY_URL} | cut -d/ -f3`
-                ip=`curl -sL https://hijk.art/hostip.php?d=${host}`
+                # ip=`curl -sL https://hijk.art/hostip.php?d=${host}`
+                ip =`$(ping -c 2 ${host} | head -2 | tail -1 | awk '{print $5}' | sed 's/[(:)]//g')`
                 res=`echo -n ${ip} | grep ${host}`
                 if [[ "${res}" = "" ]]; then
                     echo "$ip $host" >> /etc/hosts
